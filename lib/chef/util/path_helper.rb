@@ -141,6 +141,17 @@ class Chef
         path = cleanpath(join(parts))
         path.gsub(/[\\\{\}\[\]\*\?]/) { |x| "\\"+x }
       end
+
+      def self.glob(*pattern)
+        if pattern[-1].is_a? Hash
+          raise ArgumentError, "Invalid parameter :#{pattern[-1].keys.join(", :")}. Expected :flags" unless pattern[-1][:flags]
+          path = cleanpath(join(*pattern[0..-2]))
+          flags = pattern[-1][:flags]
+          Dir.glob(path, *flags)
+        else
+          Dir.glob(cleanpath(join(*pattern)))
+        end
+      end
     end
   end
 end

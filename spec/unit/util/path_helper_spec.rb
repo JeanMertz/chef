@@ -224,4 +224,43 @@ describe Chef::Util::PathHelper do
       expect(PathHelper.escape_glob(path)).to eq(escaped_path)
     end
   end
+
+  describe "glob" do
+    context "when given a string" do
+      it "globs the pattern" do
+        pattern = "/etc/chef/*.rb"
+        expect(Dir).to receive(:glob).with(pattern)
+        PathHelper.glob(pattern)
+      end
+    end
+
+    context "when given multiple arguments" do
+      let(:pattern) { ['etc', 'chef', '*.rb'] }
+      let(:glob) { pattern.join('/') }
+
+      before do
+        allow(PathHelper).to receive(:join).with(*pattern).and_return(glob)
+        allow(PathHelper).to receive(:cleanpath).with(glob).and_return(glob)
+      end
+
+      it "joins the pattern and globs" do
+        expect(Dir).to receive(:glob).with(glob)
+        PathHelper.glob(*pattern)
+      end
+
+      context "and the last argument is a hash" do
+        it "raises an error if :flags is not a hash key" do
+          args = pattern + [ {:options => File::FNM_DOTMATCH} ]
+          expect{ PathHelper.glob(*args) }.to raise_error(ArgumentError, "Invalid parameter :options. Expected :flags")
+        end
+
+        let(:key) { :flags }
+        it "passes the glob pattern and flags to Dir.glob" do
+          args = pattern + [ {:flags => File::FNM_DOTMATCH} ]
+          expect(Dir).to receive(:glob).with(glob, *args[-1][:flags])
+          PathHelper.glob(*args)
+        end
+      end
+    end
+  end
 end
