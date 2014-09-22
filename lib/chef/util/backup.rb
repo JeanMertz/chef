@@ -21,6 +21,9 @@ require 'chef/util/path_helper'
 class Chef
   class Util
     class Backup
+
+      PathHelper = Chef::Util::PathHelper
+
       attr_reader :new_resource
       attr_accessor :path
 
@@ -79,7 +82,7 @@ class Chef
       end
 
       def sorted_backup_files
-        Dir[Chef::Util::PathHelper.escape_glob(prefix, ".#{path}") + ".chef-*"].sort { |a,b| b <=> a }
+        PathHelper.glob(PathHelper.escape_glob(prefix, ".#{path}") + ".chef-*").sort { |a,b| b <=> a }
       end
     end
   end
