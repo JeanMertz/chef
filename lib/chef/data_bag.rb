@@ -31,6 +31,8 @@ class Chef
     include Chef::Mixin::FromFile
     include Chef::Mixin::ParamsValidate
 
+    PathHelper = Chef::Util::PathHelper
+
     VALID_NAME = /^[\.\-[:alnum:]_]+$/
 
     def self.validate_name!(name)
@@ -90,7 +92,7 @@ class Chef
             raise Chef::Exceptions::InvalidDataBagPath, "Data bag path '#{path}' is invalid"
           end
 
-          names += Dir.glob(File.join(Chef::Util::PathHelper.escape_glob(path), "*")).map{|f|File.basename(f)}.sort
+          names += PathHelper.glob(PathHelper.escape_glob(path), "*").map{|f|File.basename(f)}.sort
         end
         names.inject({}) {|h, n| h[n] = n; h}
       else
@@ -116,7 +118,7 @@ class Chef
             raise Chef::Exceptions::InvalidDataBagPath, "Data bag path '#{path}' is invalid"
           end
 
-          Dir.glob(File.join(Chef::Util::PathHelper.escape_glob(path, name.to_s), "*.json")).inject({}) do |bag, f|
+          PathHelper.glob(PathHelper.escape_glob(path, name.to_s), "*.json").inject({}) do |bag, f|
             item = Chef::JSONCompat.from_json(IO.read(f))
 
             # Check if we have multiple items with similar names (ids) and raise if their content differs
