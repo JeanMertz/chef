@@ -37,7 +37,6 @@ class Chef
           category_glob = category ? PathHelper.escape_glob(category) : "*"
           pkg_glob = PathHelper.escape_glob(pkg) + "-*"
           possibilities = PathHelper.glob("/var/db/pkg", category_glob, pkg_glob).map {|d| d.sub(%r{/var/db/pkg/}, "") }
-#          possibilities = Dir["/var/db/pkg/#{category_glob}/#{pkg_glob}"].map {|d| d.sub(%r{/var/db/pkg/}, "") }
           versions = possibilities.map do |entry|
             if(entry =~ %r{[^/]+/#{Regexp.escape(pkg)}\-(\d[\.\d]*((_(alpha|beta|pre|rc|p)\d*)*)?(-r\d+)?)})
               [$&, $1]
