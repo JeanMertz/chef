@@ -72,6 +72,8 @@ class Chef
       include Chef::Mixin::ShellOut
       include Chef::Mixin::Checksum
 
+      PathHelper = Chef::Util::PathHelper
+
       attr_reader :cookbook_path
 
       # A PersistentSet object that tracks which files have already been
@@ -111,7 +113,7 @@ class Chef
       end
 
       def ruby_files
-        remove_ignored_files Dir[File.join(Chef::Util::PathHelper.escape_glob(cookbook_path), '**', '*.rb')]
+        remove_ignored_files PathHelper.glob(PathHelper.escape_glob(cookbook_path), '**', '*.rb')
       end
 
       def untested_ruby_files
@@ -126,7 +128,7 @@ class Chef
       end
 
       def template_files
-        remove_ignored_files Dir[File.join(Chef::Util::PathHelper.escape_glob(cookbook_path), '**/templates/**', '*.erb')]
+        remove_ignored_files PathHelper.glob(PathHelper.escape_glob(cookbook_path), '**/templates/**', '*.erb')
       end
 
       def untested_template_files
