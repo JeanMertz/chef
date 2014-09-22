@@ -31,6 +31,8 @@ class Chef
     # Configures SSL behavior on an HTTP object via visitor pattern.
     class DefaultSSLPolicy
 
+      PathHelper = Chef::Util::PathHelper
+
       def self.apply_to(http_client)
         new(http_client).apply
         http_client
@@ -77,7 +79,7 @@ class Chef
           http_client.cert_store.set_default_paths
         end
         if config.trusted_certs_dir
-          certs = Dir.glob(File.join(Chef::Util::PathHelper.escape_glob(config.trusted_certs_dir), "*.{crt,pem}"))
+          certs = PathHelper.glob(PathHelper.escape_glob(config.trusted_certs_dir), "*.{crt,pem}")
           certs.each do |cert_file|
             cert = OpenSSL::X509::Certificate.new(File.read(cert_file))
             add_trusted_cert(cert)
