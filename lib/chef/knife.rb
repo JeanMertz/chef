@@ -34,6 +34,7 @@ class Chef
   class Knife
 
     Chef::REST::RESTRequest.user_agent = "Chef Knife#{Chef::REST::RESTRequest::UA_COMMON}"
+    PathHelper = Chef::Util::PathHelper
 
     include Mixlib::CLI
     include Chef::Mixin::PathSanity
