@@ -191,3 +191,18 @@ PathHelper = Chef::Util::PathHelper
 Dir.glob(File.join(PathHelper.escape_glob(path), "*")) # ["#{path}\\apache2", "#{path}\\apt", ...]
 Dir[PathHelper.escape_glob(path) + "/*"] # ["#{path}\\apache2", "#{path}\\apt", ...]
 ```
+
+### PathHelper glob
+Use PathHelper's glob method to safely join glob patterns according to the
+platform's file separator specification. This is especially important for Windows
+paths which exceed or may exceed maximum path length. Windows uses the `/` file
+separator, which doesn't behave properly for paths beginning with `\\?\`.
+
+You can give glob an optional `:flags` parameter, which works in the same manner
+as Ruby's optional flags passed to Dir.glob.
+
+```ruby
+PathHelper = Chef::Util::PathHelper
+PathHelper.glob(PathHelper.escape_glob(some_path), "additional", "path", "*.rb")
+PathHelper.glob(PathHelper.escape_glob(some_path), "*", :flags => [File::FNM_DOTMATCH])
+```
