@@ -34,9 +34,10 @@ class Chef
 
           category, pkg = %r{^#{PACKAGE_NAME_PATTERN}$}.match(@new_resource.package_name)[1,2]
 
-          globsafe_category = category ? Chef::Util::PathHelper.escape_glob(category) : nil
-          globsafe_pkg = Chef::Util::PathHelper.escape_glob(pkg)
-          possibilities = Dir["/var/db/pkg/#{globsafe_category || "*"}/#{globsafe_pkg}-*"].map {|d| d.sub(%r{/var/db/pkg/}, "") }
+          category_glob = category ? PathHelper.escape_glob(category) : "*"
+          pkg_glob = PathHelper.escape_glob(pkg) + "-*"
+          possibilities = PathHelper.glob("/var/db/pkg", category_glob, pkg_glob).map {|d| d.sub(%r{/var/db/pkg/}, "") }
+#          possibilities = Dir["/var/db/pkg/#{category_glob}/#{pkg_glob}"].map {|d| d.sub(%r{/var/db/pkg/}, "") }
           versions = possibilities.map do |entry|
             if(entry =~ %r{[^/]+/#{Regexp.escape(pkg)}\-(\d[\.\d]*((_(alpha|beta|pre|rc|p)\d*)*)?(-r\d+)?)})
               [$&, $1]
