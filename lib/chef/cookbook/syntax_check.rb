@@ -128,7 +128,7 @@ class Chef
       end
 
       def template_files
-        remove_ignored_files PathHelper.glob(PathHelper.escape_glob(cookbook_path), '**/templates/**', '*.erb')
+        remove_ignored_files PathHelper.glob(PathHelper.escape_glob(cookbook_path), '**', 'templates', '**', '*.erb')
       end
 
       def untested_template_files

@@ -42,7 +42,8 @@ class Chef
         user_specific_files = []
 
         if chef_config_dir
-          user_specific_files.concat PathHelper.glob(File.expand_path("plugins/knife/*.rb", PathHelper.escape_glob(chef_config_dir)))
+
+          user_specific_files.concat PathHelper.glob(PathHelper.escape_glob(File.expand_path(chef_config_dir)), "plugins", "knife", "*rb")
         end
 
         # finally search ~/.chef/plugins/knife/*.rb
