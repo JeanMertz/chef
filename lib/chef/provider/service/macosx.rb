@@ -25,6 +25,7 @@ class Chef
     class Service
       class Macosx < Chef::Provider::Service::Simple
 
+
         def self.gather_plist_dirs
           locations = %w{/Library/LaunchAgents
                          /Library/LaunchDaemons
@@ -193,9 +194,7 @@ class Chef
         def find_service_plist
           plists = PLIST_DIRS.inject([]) do |results, dir|
             edir = ::File.expand_path(dir)
-            entries = Dir.glob(
-              "#{edir}/*#{Chef::Util::PathHelper.escape_glob(@current_resource.service_name)}*.plist"
-            )
+            entries = PathHelper.glob(edir, "*#{PathHelper.escape_glob(@current_resource.service_name)}*.plist")
             entries.any? ? results << entries : results
           end
           plists.flatten!
