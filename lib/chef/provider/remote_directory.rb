@@ -36,8 +36,8 @@ class Chef
 
       def action_create
         super
-        files_to_purge = Set.new(Dir.glob(::File.join(Chef::Util::PathHelper.escape_glob(@new_resource.path), '**', '*'),
-                                          ::File::FNM_DOTMATCH).select do |name|
+        files_to_purge = Set.new(PathHelper.glob(::File.join(PathHelper.escape_glob(@new_resource.path), '**', '*'),
+                                                 :flags => ::File::FNM_DOTMATCH).select do |name|
                                    name !~ /(?:^|#{Regexp.escape(::File::SEPARATOR)})\.\.?$/
                                  end)
 
