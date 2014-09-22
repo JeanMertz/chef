@@ -38,6 +38,8 @@ class Chef
 
     include Enumerable
 
+    PathHelper = Chef::Util::PathHelper
+
     def initialize(*repo_paths)
       repo_paths = repo_paths.flatten
       raise ArgumentError, "You must specify at least one cookbook repo path" if repo_paths.empty?
@@ -161,7 +163,7 @@ class Chef
       @all_files_in_repo_paths ||=
         begin
           @repo_paths.inject([]) do |all_children, repo_path|
-            all_children += Dir[File.join(Chef::Util::PathHelper.escape_glob(repo_path), "*")]
+            all_children += PathHelper.glob(PathHelper.escape_glob(repo_path), "*")
           end
         end
     end
