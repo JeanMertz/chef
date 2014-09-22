@@ -308,7 +308,7 @@ user password using shadow hash.")
 
           src = @current_resource.home
           FileUtils.mkdir_p(@new_resource.home)
-          files = ::Dir.glob("#{Chef::Util::PathHelper.escape_glob(src)}/*", ::File::FNM_DOTMATCH) - ["#{src}/.","#{src}/.."]
+          files = PathHelper.glob(PathHelper.escape_glob(src), "*", :flags => ::File::FNM_DOTMATCH) - ["#{src}/.","#{src}/.."]
           ::FileUtils.mv(files,@new_resource.home, :force => true)
           ::FileUtils.rmdir(src)
           ::FileUtils.chown_R(@new_resource.username,@new_resource.gid.to_s,@new_resource.home)
