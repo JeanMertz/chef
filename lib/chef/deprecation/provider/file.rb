@@ -29,6 +29,8 @@ class Chef
       #
       module File
 
+        PathHelper = Chef::Util::PathHelper
+
         def diff_current_from_content(new_content)
           result = nil
           Tempfile.open("chef-diff") do |file|
@@ -181,7 +183,7 @@ class Chef
 
             # Clean up after the number of backups
             slice_number = @new_resource.backup
-            backup_files = Dir[Chef::Util::PathHelper.escape_glob(prefix, ".#{@new_resource.path}") + ".chef-*"].sort { |a,b| b <=> a }
+            backup_files = PathHelper.glob(PathHelper.escape_glob(prefix, ".#{@new_resource.path}") + ".chef-*").sort { |a,b| b <=> a }
             if backup_files.length >= @new_resource.backup
               remainder = backup_files.slice(slice_number..-1)
               remainder.each do |backup_to_delete|
