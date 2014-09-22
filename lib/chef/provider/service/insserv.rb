@@ -24,11 +24,13 @@ class Chef
     class Service
       class Insserv < Chef::Provider::Service::Init
 
+        PathHelper = Chef::Util::PathHelper
+
         def load_current_resource
           super
 
           # Look for a /etc/rc.*/SnnSERVICE link to signifiy that the service would be started in a runlevel
-          if Dir.glob("/etc/rc**/S*#{Chef::Util::PathHelper.escape_glob(@current_resource.service_name)}").empty?
+          if PathHelper.glob("", "etc", "rc**", "S*#{PathHelper.escape_glob(@current_resource.service_name)}").empty?
             @current_resource.enabled false
           else
             @current_resource.enabled true
