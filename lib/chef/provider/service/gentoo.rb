@@ -22,6 +22,8 @@ require 'chef/mixin/command'
 require 'chef/util/path_helper'
 
 class Chef::Provider::Service::Gentoo < Chef::Provider::Service::Init
+  PathHelper = Chef::Util::PathHelper
+
   def load_current_resource
 
     @new_resource.supports[:status] = true
@@ -30,7 +32,7 @@ class Chef::Provider::Service::Gentoo < Chef::Provider::Service::Init
     super
 
     @current_resource.enabled(
-      Dir.glob("/etc/runlevels/**/#{Chef::Util::PathHelper.escape_glob(@current_resource.service_name)}").any? do |file|
+      PathHelper.glob("", "etc", "runlevels", "**", PathHelper.escape_glob(@current_resource.service_name)).any? do |file|
         @found_script = true
         exists = ::File.exists? file
         readable = ::File.readable? file
