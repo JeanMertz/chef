@@ -24,6 +24,8 @@ require 'chef/util/path_helper'
 
 class Chef
   class FileCache
+    PathHelper = Chef::Util::PathHelper
+
     class << self
       include Chef::Mixin::ParamsValidate
       include Chef::Mixin::CreatePath
@@ -158,9 +160,9 @@ class Chef
       # [String] - An array of file cache keys matching the glob
       def find(glob_pattern)
         keys = Array.new
-        Dir[File.join(Chef::Util::PathHelper.escape_glob(file_cache_path), glob_pattern)].each do |f|
+        PathHelper.glob(PathHelper.escape_glob(file_cache_path), glob_pattern).each do |f|
           if File.file?(f)
-            keys << f[/^#{Regexp.escape(Dir[Chef::Util::PathHelper.escape_glob(file_cache_path)].first) + File::Separator}(.+)/, 1]
+            keys << f[/^#{Regexp.escape(PathHelper.glob(PathHelper.escape_glob(file_cache_path)).first) + File::Separator}(.+)/, 1]
           end
         end
         keys
