@@ -29,6 +29,8 @@ class Chef
     include Chef::Mixin::WhyRun
     include Chef::Mixin::ShellOut
 
+    PathHelper = Chef::Util::PathHelper
+
     attr_accessor :new_resource
     attr_accessor :current_resource
     attr_accessor :run_context
